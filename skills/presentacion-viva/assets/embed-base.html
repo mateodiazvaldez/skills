@@ -1,0 +1,43 @@
+<x-embed style="position:absolute;left:128px;top:290px;width:1664px;height:620px"><!doctype html><html><head><meta charset="utf-8"><style>
+/* Base de animación viva. Reemplazar FONDO, FUENTE, ACENTO y el contenido. Máximo 16 KB. Texto de 24 px o más. */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"FUENTE","Segoe UI",system-ui,sans-serif;background:FONDO;width:1664px;height:620px;position:relative;overflow:hidden;color:#1B2620}
+.hx{clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+/* Estado final = estado por defecto: todo visible y quieto. Es lo que se ve al imprimir o exportar. */
+.it{opacity:1}
+/* Solo mientras la animación corre (body.anim), lo que todavía no entró está oculto */
+.anim .it:not(.on):not(.st){opacity:0;transform:translateY(30px) scale(.6)}
+.anim .it.on{animation:pop .65s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes pop{0%{opacity:0;transform:translateY(30px) scale(.6)}60%{opacity:1;transform:translateY(-14px) scale(1.04)}100%{opacity:1;transform:none}}
+/* Loop vivo sobre el estado estable (no vuelve a disparar la entrada) */
+.it.st.hop{animation:hop .6s ease-in-out}
+@keyframes hop{0%,100%{transform:none}40%{transform:translateY(-14px)}70%{transform:translateY(3px)}}
+.el{position:absolute;width:200px;height:120px;border-radius:20px;background:ACENTO;color:#fff;font-size:28px;font-weight:700;display:flex;align-items:center;justify-content:center}
+</style></head><body>
+<div class="el it" style="left:100px;top:250px">Uno</div>
+<div class="el it" style="left:400px;top:250px">Dos</div>
+<div class="el it" style="left:700px;top:250px">Tres</div>
+<script>
+// Registro de timers: permite cortar todo y reiniciar cuando la slide vuelve a verse.
+var _T=[],_st=window.setTimeout,_si=window.setInterval,_vis;
+window.setTimeout=function(f,m){var i=_st(f,m);_T.push(i);return i};
+window.setInterval=function(f,m){var i=_si(f,m);_T.push(i);return i};
+function _go(){_T.forEach(function(i){clearTimeout(i);clearInterval(i)});_T=[];BOOT()}
+
+var B=document.body,IT=document.querySelectorAll('.it');
+// Estado final: todo visible, quieto, con los valores definitivos (contadores, barras, escenario de la meta).
+function FINAL(){B.classList.remove('anim');IT.forEach(function(e){e.classList.remove('on','st','hop')})}
+function wave(){IT.forEach(function(e,k){setTimeout(function(){e.classList.remove('hop');e.offsetWidth;e.classList.add('hop')},k*200)})}
+function BOOT(){
+  B.classList.add('anim');IT.forEach(function(e){e.classList.remove('on','st','hop')});           // estado inicial
+  IT.forEach(function(e,k){setTimeout(function(){e.classList.add('on')},300+k*400)});            // entrada en secuencia
+  setTimeout(function(){IT.forEach(function(e){e.classList.remove('on');e.classList.add('st')});  // queda estable
+    wave();setInterval(wave,3000)},300+IT.length*400+700);                                       // loop vivo
+}
+// Arranca en el estado final. Corre la animación solo cuando la slide se ve; con window.PRINT se queda quieta.
+FINAL();
+if(!window.PRINT){
+  if('IntersectionObserver' in window)new IntersectionObserver(function(es){var v=es[0].isIntersecting;if(v&&!_vis)_go();_vis=v},{threshold:0.3}).observe(B);
+  else BOOT();
+}
+</script></body></html></x-embed>
