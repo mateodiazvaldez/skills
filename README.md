@@ -21,6 +21,7 @@ npx skills add mateodiazvaldez/skills -s <skill> -g
 
 | Skill | Para qué | Cuándo se dispara | Instalar |
 |---|---|---|---|
+| [`wireframe-a-sitio-playbook`](skills/wireframe-a-sitio-playbook/SKILL.md) | Lleva un wireframe (o sitio básico) con copy y fotos ya definidos a un sitio premium por fases: pulido, re-layout, marca y motion, con puertas de verificación y Lighthouse A/B. No cambia copy ni fotos. Incluye scripts para la imagen de redes y para Lighthouse A/B. | "pasá este wireframe a sitio", "hacelo premium", "modernizá/puli la web", "auditá el branding del sitio" | `npx skills add mateodiazvaldez/skills -s wireframe-a-sitio-playbook` |
 | [`microinteracciones-playbook`](skills/microinteracciones-playbook/SKILL.md) | Fija el flujo y mi estilo de movimiento por defecto (Expresivo, Equilibrado, Mínimo o Personalizado) y lo registra en `docs/MOTION.md`. No enseña a animar. | "agregá microinteracciones", "animá esta pantalla", "hacé que se sienta más vivo", "auditá el motion", "revisá las animaciones" | `npx skills add mateodiazvaldez/skills -s microinteracciones-playbook` |
 | [`presentacion-viva`](skills/presentacion-viva/SKILL.md) | Arma, audita y mejora presentaciones como artifact Slides de claude.ai: poco texto, branding en cada slide, gráficos animados en loop. Usada en un deck real; sin evaluaciones formales. | Pedidos de presentación, deck, diapositivas, pitch o defensa de TPO; auditar, reordenar o animar slides; repartir oradores | `npx skills add mateodiazvaldez/skills -s presentacion-viva` |
 | [`test-cases`](skills/test-cases/SKILL.md) | Auditoría de cobertura de tests automatizados más plan de test cases manuales (matriz de trazabilidad). v0.1.0 | "auditoría de tests", "qué tests faltan", "cobertura de tests", "generá los test cases", "QA audit" | `npx skills add mateodiazvaldez/skills -s test-cases` |
@@ -39,11 +40,21 @@ npx skills add emilkowalski/skills -s animate improve-animations review-animatio
 
 `review-animations` tiene `disable-model-invocation`: la corro yo con `/review-animations`.
 
+`wireframe-a-sitio-playbook` orquesta skills de otros autores, que se instalan aparte:
+
+```bash
+npx skills add pbakaus/impeccable -s impeccable                     # audit, polish, critique, teach, document
+npx skills add leonxlnx/taste-skill -s redesign-existing-projects
+npx skills add vercel-labs/agent-skills -s web-design-guidelines
+npx skills add mateodiazvaldez/skills -s microinteracciones-playbook  # fase de motion (propia)
+```
+
 ## Estructura
 
 ```
 skills/<nombre>/SKILL.md      # frontmatter name + description
 skills/<nombre>/*.md          # archivos de apoyo
+skills/<nombre>/scripts/      # herramientas (se invocan con su intérprete: node/bash)
 ```
 
 ## Licencia
