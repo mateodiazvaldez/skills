@@ -1,0 +1,2 @@
+# Los scripts de shell necesitan LF aun en checkouts de Windows (bash falla con )
+*.sh text eol=lf
