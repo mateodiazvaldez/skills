@@ -1,0 +1,779 @@
+<title>Correo con dominio propio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style id="main-css">
+/* Layout: columna de lectura única; pasos como lista numerada con rail; chips de rol (técnico / cliente) en el tutorial 2 */
+:root{
+  --bg:#f5f8f7; --surface:#ffffff; --ink:#14201f; --muted:#576866; --line:#d7e1df;
+  --accent:#0d6b63; --accent-soft:#e0f0ed;
+  --client:#7041a8; --client-soft:#f1eaf9;
+  --warn:#8f5400; --warn-soft:#fbefd9;
+  --code-bg:#eef3f2;
+  --f-display:"Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1615; --surface:#15201e; --ink:#e2ebe9; --muted:#95a7a4; --line:#293735;
+  --accent:#57c4b7; --accent-soft:#12302c;
+  --client:#bf9cec; --client-soft:#271e33;
+  --warn:#eab463; --warn-soft:#30250f;
+  --code-bg:#1b2826; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e1615; --surface:#15201e; --ink:#e2ebe9; --muted:#95a7a4; --line:#293735;
+  --accent:#57c4b7; --accent-soft:#12302c;
+  --client:#bf9cec; --client-soft:#271e33;
+  --warn:#eab463; --warn-soft:#30250f;
+  --code-bg:#1b2826; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:32px 72px}
+.wrap{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(1.9rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.4rem;font-weight:700;letter-spacing:-.01em}
+h3{font-size:1.08rem;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+a.url{font-family:var(--f-mono);font-size:.9em;font-weight:500;overflow-wrap:anywhere}
+.lede{color:var(--muted);max-width:62ch;margin-top:10px}
+.eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+code{background:var(--code-bg);padding:1px 6px;border-radius:4px;overflow-wrap:anywhere}
+.ph{font-family:var(--f-mono);font-size:.88em;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:4px;overflow-wrap:anywhere;font-weight:500}
+.ui{font-weight:600}
+.ui-en{color:var(--muted);font-weight:400}
+
+/* Personalización */
+.custom{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.custom-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.custom-head p{color:var(--muted);font-size:.9rem}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.fields label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);font-weight:600}
+.fields input{font:inherit;font-family:var(--f-mono);font-size:.9rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-width:0}
+.fields input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.btn-link{background:none;border:0;color:var(--accent);font:inherit;font-size:.85rem;cursor:pointer;padding:0;text-decoration:underline}
+
+/* Tabs */
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font:inherit;font-weight:600;font-size:.95rem;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:10px 12px 9px;cursor:pointer;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.tab small{display:block;font-family:var(--f-mono);font-weight:400;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+section.panel{display:flex;flex-direction:column;gap:30px}
+.intro{display:flex;flex-direction:column;gap:10px;max-width:66ch}
+.intro p{color:var(--muted)}
+
+/* Requisitos / avisos */
+.reqs{display:flex;flex-direction:column;gap:8px;padding:0;margin:0;list-style:none}
+.reqs li{display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start}
+.reqs li::before{content:"";width:12px;height:12px;border:2px solid var(--accent);border-radius:3px;margin-top:6px}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:12px 14px;border-radius:0 6px 6px 0;display:flex;flex-direction:column;gap:4px}
+.note strong{color:var(--warn)}
+.note.info{border-left-color:var(--accent);background:var(--accent-soft)}
+.note.info strong{color:var(--accent)}
+
+/* Fases y pasos */
+.phase{display:flex;flex-direction:column;gap:14px}
+.phase-head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.phase-head .eyebrow{color:var(--muted)}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.step{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 0;border-bottom:1px dashed var(--line)}
+.step:last-child{border-bottom:0}
+.num{font-family:var(--f-mono);font-weight:500;font-size:.9rem;color:var(--accent);width:36px;height:36px;border:1.5px solid var(--accent);border-radius:50%;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.step.client .num{color:var(--client);border-color:var(--client)}
+.step-body{display:flex;flex-direction:column;gap:8px;min-width:0}
+.step-title{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.path{font-size:.9rem;color:var(--muted)}
+.path b{color:var(--ink);font-weight:600}
+.do{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.result{font-size:.92rem;display:grid;grid-template-columns:auto 1fr;gap:8px}
+.start{font-size:.92rem;background:var(--code-bg);padding:8px 12px;border-radius:6px;overflow-wrap:anywhere}
+.start::before{content:"Empezá en";display:inline-block;margin-right:10px;font-family:var(--f-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:500}
+.step.client .start::before{color:var(--client)}
+.do ul{margin:4px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.result::before{content:"Resultado";font-family:var(--f-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding-top:4px}
+.step.client .result::before{color:var(--client)}
+
+/* Tabla de campos */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.72rem;font-family:var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.k{font-weight:600;white-space:nowrap}
+.bad{text-decoration:line-through;color:var(--muted)}
+
+/* Roles */
+.role{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:999px;font-weight:500;white-space:nowrap}
+.role.tec{background:var(--accent-soft);color:var(--accent)}
+.role.cli{background:var(--client-soft);color:var(--client)}
+
+/* Secuencia */
+.seq{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0;border-left:2px solid var(--line);margin-left:8px}
+.seq li{position:relative;padding:8px 0 8px 22px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline}
+.seq li::before{content:"";position:absolute;left:-7px;top:15px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.seq li.c::before{background:var(--client)}
+.seq .s-text{min-width:0}
+.seq .s-text span{color:var(--muted);font-size:.9rem}
+
+/* Errores */
+.errs{display:flex;flex-direction:column;gap:0}
+.err{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.err:last-child{border-bottom:0}
+.err h3{font-size:.95rem}
+.err p{font-size:.92rem;color:var(--muted)}
+
+/* Checklist */
+.check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.check label{display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start;cursor:pointer}
+.check input{margin-top:5px;accent-color:var(--accent);width:16px;height:16px}
+
+/* Guía del cliente (imprimible) */
+.client-doc{border:1.5px solid var(--client);border-radius:12px;background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:22px}
+.client-doc .eyebrow{color:var(--client)}
+.datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 20px;font-size:.92rem}
+.datos div{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.datos span{font-size:.72rem;font-family:var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.toggle{font:inherit;font-size:.88rem;font-weight:600;border:1px solid var(--client);color:var(--client);background:transparent;border-radius:6px;padding:7px 12px;cursor:pointer}
+.toggle[aria-pressed="true"]{background:var(--client);color:var(--surface)}
+.toggle:focus-visible{outline:2px solid var(--client);outline-offset:2px}
+.toolbar p{font-size:.85rem;color:var(--muted);flex-basis:100%}
+.print-btn{font:inherit;font-size:.88rem;font-weight:600;border:1px solid var(--client);background:var(--client);color:var(--surface);border-radius:6px;padding:7px 14px;cursor:pointer}
+.print-btn:disabled{opacity:.55;cursor:default}
+.print-btn:focus-visible{outline:2px solid var(--client);outline-offset:2px}
+body.only-client .hide-in-client{display:none!important}
+
+footer{color:var(--muted);font-size:.82rem;border-top:1px solid var(--line);padding-top:14px}
+
+@media (max-width:560px){
+  .step{grid-template-columns:36px 1fr;gap:10px}
+  .num{width:30px;height:30px;font-size:.8rem}
+  .err{grid-template-columns:1fr;gap:4px}
+  .client-doc{padding:16px}
+  .result{grid-template-columns:1fr;gap:2px}
+  .result::before{padding-top:0}
+}
+@media print{
+  body{background:#fff;color:#000;padding:0}
+  .custom,.tabs,.toolbar,header,.hide-print,footer{display:none!important}
+  section.panel[hidden]{display:none!important}
+  .client-doc{border:0;padding:0}
+  .step{break-inside:avoid}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="hide-in-client">
+    <p class="eyebrow">Cloudflare Email Routing + Gmail</p>
+    <h1>Correo con dominio propio, gratis, desde Gmail</h1>
+    <p class="lede">Recibir y responder como <span class="ph" data-k="email">contacto@tudominio.com</span> usando una cuenta normal de Gmail. Cloudflare reenvía lo que entra; Gmail envía en nombre del dominio.</p>
+  </header>
+
+  <div class="custom hide-in-client">
+    <div class="custom-head">
+      <h3>Datos de esta configuración</h3>
+      <p>Lo que escribas acá reemplaza los ejemplos en todo el tutorial. <button class="btn-link" id="reset" type="button">Volver a los ejemplos</button></p>
+    </div>
+    <div class="fields">
+      <label for="f-dominio">Dominio<input id="f-dominio" data-f="dominio" autocomplete="off" spellcheck="false" placeholder="tudominio.com"></label>
+      <label for="f-alias">Alias (antes de la @)<input id="f-alias" data-f="alias" autocomplete="off" spellcheck="false" placeholder="contacto"></label>
+      <label for="f-gmail">Gmail de destino<input id="f-gmail" data-f="gmail" autocomplete="off" spellcheck="false" placeholder="tucuenta@gmail.com"></label>
+      <label for="f-nombre">Nombre visible<input id="f-nombre" data-f="nombre" autocomplete="off" placeholder="Nombre del negocio"></label>
+    </div>
+  </div>
+
+  <nav class="tabs hide-in-client" role="tablist" aria-label="Tutoriales">
+    <button class="tab" role="tab" id="tab-t1" aria-controls="t1" aria-selected="true" type="button"><small>Tutorial 1</small>Configuración completa</button>
+    <button class="tab" role="tab" id="tab-t2" aria-controls="t2" aria-selected="false" type="button"><small>Tutorial 2</small>Técnico + cliente</button>
+  </nav>
+
+  <!-- ===================== TUTORIAL 1 ===================== -->
+  <section class="panel" id="t1" role="tabpanel" aria-labelledby="tab-t1">
+    <div class="intro">
+      <h2>Tutorial 1 · Hacés todo vos</h2>
+      <p>Para cuando tenés acceso al panel de Cloudflare y a la cuenta de Google al mismo tiempo (por ejemplo, sentado en la computadora del cliente). Son 13 pasos en 5 fases; lleva unos 15 minutos.</p>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><h2>Antes de empezar</h2></div>
+      <ul class="reqs">
+        <li><span>Dominio <span class="ph" data-k="dominio">tudominio.com</span> activo en Cloudflare, con los DNS gestionados ahí (el plan Free alcanza).</span></li>
+        <li><span>Acceso a la cuenta de Gmail que va a recibir y enviar: <span class="ph" data-k="gmail">tucuenta@gmail.com</span>.</span></li>
+        <li><span><span class="ui">Verificación en dos pasos</span> activada en esa cuenta de Google. Sin esto, Google no deja crear contraseñas de aplicación.</span></li>
+        <li><span>Otra casilla de correo cualquiera para hacer la prueba final.</span></li>
+      </ul>
+      <div class="note">
+        <strong>Revisá los registros MX actuales del dominio</strong>
+        <p>Si el dominio ya recibe correo en otro servicio (Google Workspace, Zoho, el correo del hosting), activar Email Routing reemplaza esos registros MX y ese correo deja de llegar. Para revisarlo: en <a class="url" href="https://dash.cloudflare.com" target="_blank" rel="noopener">https://dash.cloudflare.com</a> abrí el dominio → menú izquierdo <b>DNS</b> → <b>Records</b>, y fijate si en la columna <b>Type</b> hay alguna fila que diga <code>MX</code>. Si hay y no son de Cloudflare, no sigas sin hablarlo con el cliente.</p>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><span class="eyebrow">Fase 1</span><h2>Cloudflare: recibir correos</h2></div>
+      <ol class="steps">
+        <li class="step"><span class="num">1</span><div class="step-body">
+          <h3>Abrir el dominio en Cloudflare</h3>
+          <p class="start"><a class="url" href="https://dash.cloudflare.com" target="_blank" rel="noopener">https://dash.cloudflare.com</a></p>
+          <ol class="do">
+            <li>Iniciá sesión con la cuenta de Cloudflare donde está el dominio.</li>
+            <li>Quedás en <span class="ui">Account Home</span>. Arriba, en el centro de la página, hacé clic en la pestaña <span class="ui">Domains</span>.</li>
+            <li>En la lista, hacé clic sobre el nombre <span class="ph" data-k="dominio">tudominio.com</span>. Al lado tiene que decir <code>Active</code>.</li>
+          </ol>
+          <p class="path"><b>Si dice otra cosa que no sea Active</b> (por ejemplo <code>Pending</code>), el dominio todavía no usa los DNS de Cloudflare y no podés seguir.</p>
+          <p class="result">Ves la página <span class="ui">Overview</span> del dominio, con un menú de opciones en la columna izquierda.</p>
+        </div></li>
+        <li class="step"><span class="num">2</span><div class="step-body">
+          <h3>Activar Email Routing</h3>
+          <p class="start">La página del dominio del paso 1</p>
+          <ol class="do">
+            <li>En el menú de la columna izquierda, hacé clic en <span class="ui">Email</span>. Se despliega un submenú.</li>
+            <li>Hacé clic en <span class="ui">Email Routing</span>.</li>
+            <li>Aparece un recuadro naranja que dice <code>Email Routing is currently disabled and not routing emails</code>. Dentro de ese recuadro, hacé clic en el botón azul <span class="ui">Enable Email Routing</span>.</li>
+          </ol>
+          <p class="result">Se abre la pantalla <span class="ui">Add Email Routing DNS records</span> con una lista de registros.</p>
+        </div></li>
+        <li class="step"><span class="num">3</span><div class="step-body">
+          <h3>Agregar los registros DNS automáticamente</h3>
+          <p class="start">La pantalla “Add Email Routing DNS records” del paso 2</p>
+          <ol class="do">
+            <li>Mirá la lista: tienen que aparecer estos registros (no tenés que escribir nada, Cloudflare los crea solo).</li>
+          </ol>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Tipo</th><th>Nombre</th><th>Valor</th></tr></thead>
+            <tbody>
+              <tr><td class="k">MX</td><td><span class="ph" data-k="dominio">tudominio.com</span></td><td><code>route1.mx.cloudflare.net</code></td></tr>
+              <tr><td class="k">MX</td><td><span class="ph" data-k="dominio">tudominio.com</span></td><td><code>route2.mx.cloudflare.net</code></td></tr>
+              <tr><td class="k">MX</td><td><span class="ph" data-k="dominio">tudominio.com</span></td><td><code>route3.mx.cloudflare.net</code></td></tr>
+              <tr><td class="k">TXT</td><td><span class="ph" data-k="dominio">tudominio.com</span></td><td><code>v=spf1 include:_spf.mx.cloudflare.net ~all</code></td></tr>
+              <tr><td class="k">TXT</td><td><code>_cf-email-…</code></td><td>Registro de verificación de Cloudflare</td></tr>
+            </tbody>
+          </table></div>
+          <ol class="do" start="2">
+            <li>Abajo a la izquierda, hacé clic en el botón azul <span class="ui">Add records and enable</span>.</li>
+          </ol>
+          <p class="path">Las prioridades de los MX (los números al lado) las pone Cloudflare; no las toques. Los MX hacen que el correo llegue a Cloudflare y el TXT le permite reenviarlo sin caer en spam.</p>
+          <p class="path"><b>Si Cloudflare te ofrece borrar registros MX que ya existían</b>, frená: el dominio ya tenía correo en otro lado. Volvé a “Antes de empezar”.</p>
+          <p class="result">Pasás solo a la pestaña <span class="ui">Settings</span>, que muestra en verde <code>Routing status: Configured</code> y <code>Email DNS records: Configured</code>, y <code>MX records: Locked</code>.</p>
+        </div></li>
+        <li class="step"><span class="num">4</span><div class="step-body">
+          <h3>Crear la dirección y su regla de reenvío</h3>
+          <p class="start">La sección Email Routing del paso 3 (menú izquierdo → <b>Email</b> → <b>Email Routing</b>)</p>
+          <ol class="do">
+            <li>Arriba, en la fila de pestañas, hacé clic en <span class="ui">Routing rules</span>.</li>
+            <li>Bajá hasta la sección <span class="ui">Custom addresses</span>. A la derecha de ese título hay un botón azul <span class="ui">Create address</span>: hacé clic.</li>
+            <li>Completá el formulario así:</li>
+          </ol>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Campo</th><th>Qué hacer</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Custom address</td><td>Escribí solo <span class="ph" data-k="alias">contacto</span>. El <code>@</code> y el dominio ya aparecen escritos a la derecha; no los repitas.</td></tr>
+              <tr><td class="k">Action</td><td>Dejá <code>Send to an email</code> (ya viene elegido).</td></tr>
+              <tr><td class="k">Destination</td><td>Elegí <span class="ph" data-k="gmail">tucuenta@gmail.com</span> en la lista. Si no aparece, escribilo completo en ese mismo campo.</td></tr>
+            </tbody>
+          </table></div>
+          <ol class="do" start="4">
+            <li>Hacé clic en el botón azul <span class="ui">Save</span>.</li>
+          </ol>
+          <div class="note"><strong>Si es la primera vez que usás ese Gmail como destino</strong><p>Cloudflare le manda un correo de verificación. Abrí <a class="url" href="https://mail.google.com" target="_blank" rel="noopener">https://mail.google.com</a> con <span class="ph" data-k="gmail">tucuenta@gmail.com</span>, buscá el correo de <b>Cloudflare</b> en <span class="ui">Recibidos</span> (o en <span class="ui">Spam</span>) y hacé clic en el botón <span class="ui">Verify email address</span>. Hasta que no lo hagas, el reenvío no funciona.</p></div>
+          <p class="path"><b>Para comprobarlo:</b> en la fila de pestañas de arriba, entrá a <span class="ui">Destination addresses</span>. El Gmail tiene que decir <code>Verified</code>. Si dice <code>Pending</code>, falta hacer clic en el correo de verificación.</p>
+          <p class="result">En <span class="ui">Routing rules</span> → <span class="ui">Custom addresses</span> aparece la fila <span class="ph" data-k="email">contacto@tudominio.com</span> → <span class="ph" data-k="gmail">tucuenta@gmail.com</span> con el interruptor en verde y <code>Active</code>.</p>
+        </div></li>
+      </ol>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><span class="eyebrow">Fase 2</span><h2>Google: contraseña de aplicación</h2></div>
+      <div class="note info"><strong>Usá la cuenta correcta</strong><p>Todo lo que sigue se hace con la cuenta <span class="ph" data-k="gmail">tucuenta@gmail.com</span>. Si en el navegador hay más de una cuenta de Google abierta, en cada página fijate arriba a la derecha que la foto o la inicial sea la de esa cuenta. Si no, hacé clic en la foto y cambiá de cuenta.</p></div>
+      <ol class="steps" start="5">
+        <li class="step"><span class="num">5</span><div class="step-body">
+          <h3>Confirmar la verificación en dos pasos</h3>
+          <p class="start"><a class="url" href="https://myaccount.google.com/signinoptions/two-step-verification" target="_blank" rel="noopener">https://myaccount.google.com/signinoptions/two-step-verification</a></p>
+          <ol class="do">
+            <li>Abrí ese enlace. Google puede pedirte la contraseña de la cuenta: escribila.</li>
+            <li>Mirá lo que dice la página:
+              <ul>
+                <li>Si dice que la verificación en dos pasos <b>está activada</b> (y ofrece un botón para desactivarla), está todo bien. Pasá al paso 6.</li>
+                <li>Si ves un botón para <b>activar</b> la verificación en dos pasos, hacé clic y seguí lo que pide Google (normalmente tu número de celular y un código que llega por SMS).</li>
+              </ul>
+            </li>
+          </ol>
+        </div></li>
+        <li class="step"><span class="num">6</span><div class="step-body">
+          <h3>Crear la contraseña de aplicación</h3>
+          <p class="start"><a class="url" href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">https://myaccount.google.com/apppasswords</a></p>
+          <ol class="do">
+            <li>Abrí ese enlace. Google pide confirmar que sos vos (contraseña, llave de acceso o teléfono).</li>
+            <li>Ves la página <span class="ui">Contraseñas de aplicaciones</span>. Hay un campo de texto <span class="ui">Nombre de la app</span>: escribí <span class="ph" data-k="email">contacto@tudominio.com</span> (es solo un nombre para reconocerla después).</li>
+            <li>Hacé clic en el botón azul <span class="ui">Crear</span>, a la derecha del campo.</li>
+            <li>Aparece una ventana con una clave de 16 letras en un recuadro amarillo (4 bloques de 4 letras). <b>No hagas clic en <span class="ui">Listo</span> todavía.</b></li>
+          </ol>
+          <div class="note"><strong>Dejá esta pestaña abierta</strong><p>Cuando cerrás esa ventana, Google no vuelve a mostrar la clave. Seguí con el paso 7 en otra pestaña y volvé acá para copiarla en el paso 8. Si preferís, pegala en un bloc de notas temporal y borrala cuando termines. No la mandes por chat. Si la perdés, borrala en esta misma página (ícono de papelera) y creá otra.</p></div>
+          <p class="path"><b>Si la página dice que la opción no está disponible</b>, la verificación en dos pasos no está activada. Volvé al paso 5.</p>
+        </div></li>
+      </ol>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><span class="eyebrow">Fase 3</span><h2>Gmail: enviar como el dominio</h2></div>
+      <ol class="steps" start="7">
+        <li class="step"><span class="num">7</span><div class="step-body">
+          <h3>Abrir “Enviar como” en la configuración de Gmail</h3>
+          <p class="start">Una <b>pestaña nueva</b> (Ctrl+T), sin cerrar la de la contraseña. Pegá esta dirección: <a class="url" href="https://mail.google.com/mail/u/0/#settings/accounts" target="_blank" rel="noopener">https://mail.google.com/mail/u/0/#settings/accounts</a></p>
+          <ol class="do">
+            <li>Se abre la configuración de Gmail directamente en la pestaña <span class="ui">Cuentas e importación</span> (aparece subrayada en la fila de pestañas de arriba).</li>
+            <li>Bajá hasta la sección <span class="ui">Enviar como:</span>. Ahí figura tu Gmail.</li>
+            <li>Debajo, hacé clic en el enlace azul <span class="ui">Añadir otra dirección de correo electrónico</span>.</li>
+          </ol>
+          <p class="path"><b>Si el enlace de arriba abre otra cuenta</b>, entrá a <a class="url" href="https://mail.google.com" target="_blank" rel="noopener">https://mail.google.com</a> con la cuenta correcta, hacé clic en el engranaje (arriba a la derecha) → botón <span class="ui">Ver todos los ajustes</span> → pestaña <span class="ui">Cuentas e importación</span>.</p>
+          <p class="path"><b>Si no se abre ninguna ventana</b>, el navegador la bloqueó. Mirá a la derecha de la barra de direcciones: aparece un ícono de ventana tachada. Hacé clic → <span class="ui">Permitir siempre ventanas emergentes de mail.google.com</span> → volvé a hacer clic en el enlace.</p>
+          <p class="path">Google te manda un aviso de seguridad por la contraseña creada en el paso 6; es normal, podés ignorarlo.</p>
+          <p class="result">Se abre una <b>ventana chica aparte</b>, con borde amarillo, titulada “Añadir otra dirección de correo electrónico de tu propiedad”.</p>
+        </div></li>
+        <li class="step"><span class="num">8</span><div class="step-body">
+          <h3>Cargar la dirección y el servidor SMTP</h3>
+          <p class="start">La ventana amarilla del paso 7</p>
+          <p><b>Pantalla 1 de la ventana</b></p>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Campo</th><th>Qué hacer</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Nombre</td><td>Borrá lo que haya y escribí <span class="ph" data-k="nombre">Nombre del negocio</span>. Es lo que ve quien recibe tus correos.</td></tr>
+              <tr><td class="k">Dirección de correo electrónico</td><td>Escribí <span class="ph" data-k="email">contacto@tudominio.com</span></td></tr>
+              <tr><td class="k">Tratar como un alias</td><td>Dejá la casilla marcada (ya viene así).</td></tr>
+            </tbody>
+          </table></div>
+          <p>Hacé clic en <span class="ui">Siguiente paso »</span>.</p>
+          <p><b>Pantalla 2 de la ventana.</b> Gmail rellena dos campos con datos que <b>no sirven</b>. En cada uno: hacé clic dentro, apretá Ctrl+A para seleccionar todo, borrá y escribí lo de la columna de la derecha.</p>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Campo</th><th>Gmail pone</th><th>Tiene que quedar</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Servidor SMTP</td><td class="bad">route1.mx.cloudflare.net</td><td><code>smtp.gmail.com</code></td></tr>
+              <tr><td class="k">Puerto</td><td>587</td><td><code>587</code> (no lo toques)</td></tr>
+              <tr><td class="k">Nombre de usuario</td><td class="bad"><span data-k="alias">contacto</span></td><td><span class="ph" data-k="gmail">tucuenta@gmail.com</span> completo, con <code>@gmail.com</code></td></tr>
+              <tr><td class="k">Contraseña</td><td>vacío</td><td>La clave del paso 6. Volvé a esa pestaña, seleccioná las 16 letras con el mouse, Ctrl+C, volvé a esta ventana y Ctrl+V.</td></tr>
+              <tr><td class="k">Conexión</td><td>TLS</td><td>Dejá elegida <span class="ui">Conexión segura mediante TLS (recomendado)</span></td></tr>
+            </tbody>
+          </table></div>
+          <p>Hacé clic en <span class="ui">Añadir cuenta »</span>. Ahora sí podés volver a la pestaña de Google, hacer clic en <span class="ui">Listo</span> y borrar la nota temporal si usaste una.</p>
+          <p class="path"><b>Si aparece un error</b>, revisá en este orden: servidor <code>smtp.gmail.com</code>, usuario con el Gmail completo, y que la contraseña sea la de 16 letras y no la normal de Google. Si sigue fallando, probá pegar la clave sin espacios.</p>
+          <p class="result">La ventana cambia a “Confirmar verificación y añadir tu dirección de correo electrónico” y avisa que mandó un correo a <span class="ph" data-k="email">contacto@tudominio.com</span>. <b>No cierres esta ventana.</b></p>
+        </div></li>
+        <li class="step"><span class="num">9</span><div class="step-body">
+          <h3>Confirmar la dirección</h3>
+          <p class="start">La pestaña principal de Gmail (no la ventana amarilla). Si la cerraste: <a class="url" href="https://mail.google.com" target="_blank" rel="noopener">https://mail.google.com</a></p>
+          <ol class="do">
+            <li>En el menú de la izquierda, hacé clic en <span class="ui">Recibidos</span>.</li>
+            <li>Esperá a que llegue un correo del <span class="ui">Equipo de Gmail</span> con asunto <code>Gmail Confirmation - Send Mail as <span data-k="email">contacto@tudominio.com</span></code>. Puede tardar 1 o 2 minutos; apretá F5 para actualizar.</li>
+            <li>Abrí el correo y hacé clic en el enlace largo azul que tiene en el texto.</li>
+            <li>Se abre una pestaña nueva. Hacé clic en el botón <span class="ui">Confirm</span> (o <span class="ui">Confirmar</span>).</li>
+          </ol>
+          <p class="path"><b>Otra forma:</b> el mismo correo trae un código numérico. Podés copiarlo, pegarlo en el campo de la ventana amarilla y hacer clic en <span class="ui">Verificar</span>.</p>
+          <p class="path"><b>Si el correo no llega</b>, el reenvío de Cloudflare todavía no funciona: revisá el paso 4 (destino <code>Verified</code>) y la carpeta <span class="ui">Spam</span>.</p>
+          <p class="result">La página dice <code>Confirmation Success!</code>. Cerrá esa pestaña y la ventana amarilla. En <span class="ui">Cuentas e importación</span> → <span class="ui">Enviar como</span> ahora aparecen dos direcciones.</p>
+        </div></li>
+      </ol>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><span class="eyebrow">Fase 4</span><h2>Ajustes de uso en Gmail</h2></div>
+      <ol class="steps" start="10">
+        <li class="step"><span class="num">10</span><div class="step-body">
+          <h3>Responder desde la dirección que recibió el correo</h3>
+          <p class="start"><a class="url" href="https://mail.google.com/mail/u/0/#settings/accounts" target="_blank" rel="noopener">https://mail.google.com/mail/u/0/#settings/accounts</a> (la misma página del paso 7)</p>
+          <ol class="do">
+            <li>Comprobá que en la fila de pestañas de arriba esté subrayada <span class="ui">Cuentas e importación</span>.</li>
+            <li>Bajá hasta la sección <span class="ui">Enviar como:</span>. Debajo de la lista de direcciones hay una línea que dice <span class="ui">Al responder a un mensaje:</span> con dos opciones redondas.</li>
+            <li>Hacé clic en la opción <span class="ui">Responder desde la misma dirección a la que se envió el mensaje</span>.</li>
+          </ol>
+          <p class="path">Suele venir elegida, pero comprobalo. En esta pestaña el cambio se guarda solo; no hay botón de guardar. Así, cuando alguien escribe a <span class="ph" data-k="email">contacto@tudominio.com</span>, la respuesta sale desde esa dirección y no desde el Gmail personal.</p>
+          <p class="path"><b>Si no ves la línea “Al responder a un mensaje”</b>, el paso 9 no se terminó: solo aparece cuando hay dos direcciones en “Enviar como”.</p>
+        </div></li>
+        <li class="step"><span class="num">11</span><div class="step-body">
+          <h3>Filtro y etiqueta para separar estos correos</h3>
+          <p class="start"><a class="url" href="https://mail.google.com/mail/u/0/#settings/filters" target="_blank" rel="noopener">https://mail.google.com/mail/u/0/#settings/filters</a></p>
+          <ol class="do">
+            <li>Se abre la pestaña <span class="ui">Filtros y direcciones bloqueadas</span> (subrayada arriba). Si no, hacé clic en ella.</li>
+            <li>Hacé clic en el enlace <span class="ui">Crear un filtro nuevo</span>.</li>
+            <li>Arriba aparece un recuadro de búsqueda con varios campos. En el campo <span class="ui">Para</span> escribí <span class="ph" data-k="email">contacto@tudominio.com</span>. Dejá los demás vacíos.</li>
+            <li>Abajo a la derecha del recuadro, hacé clic en <span class="ui">Crear filtro</span> (al lado del botón azul <span class="ui">Buscar</span>; no hagas clic en Buscar).</li>
+            <li>Aparece una lista de casillas. Marcá <span class="ui">Aplicar la etiqueta:</span>.</li>
+            <li>A la derecha de esa casilla, abrí el desplegable <span class="ui">Elegir etiqueta…</span> y elegí <span class="ui">Etiqueta nueva…</span>.</li>
+            <li>En la ventanita, escribí <span class="ph" data-k="email">contacto@tudominio.com</span> como nombre, dejá sin marcar “Anidar etiqueta en” y hacé clic en <span class="ui">Crear</span>.</li>
+            <li>De vuelta en la lista de casillas, hacé clic en el botón azul <span class="ui">Crear filtro</span>.</li>
+          </ol>
+          <p class="result">El filtro aparece en la lista: “Coincidencias: to:(<span data-k="email">contacto@tudominio.com</span>) · Acción: Aplicar etiqueta”. Todo lo que llegue a esa dirección tendrá esa etiqueta gris en la bandeja.</p>
+        </div></li>
+      </ol>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><span class="eyebrow">Fase 5</span><h2>Prueba en vivo</h2></div>
+      <ol class="steps" start="12">
+        <li class="step"><span class="num">12</span><div class="step-body">
+          <h3>Probar la recepción</h3>
+          <p class="start">Otra casilla de correo cualquiera (no <span class="ph" data-k="gmail">tucuenta@gmail.com</span>)</p>
+          <ol class="do">
+            <li>Hacé clic en <span class="ui">Redactar</span> (o el botón para escribir un correo nuevo).</li>
+            <li>En <span class="ui">Para</span> escribí <span class="ph" data-k="email">contacto@tudominio.com</span>, en <span class="ui">Asunto</span> escribí <code>Prueba</code> y algo en el texto.</li>
+            <li>Hacé clic en <span class="ui">Enviar</span>.</li>
+            <li>Volvé a la pestaña de <span class="ph" data-k="gmail">tucuenta@gmail.com</span> → <span class="ui">Recibidos</span>. Puede tardar unos segundos; apretá F5.</li>
+          </ol>
+          <p class="result">El correo aparece en <span class="ui">Recibidos</span> con la etiqueta gris <span class="ph" data-k="email">contacto@tudominio.com</span> a la izquierda del asunto.</p>
+        </div></li>
+        <li class="step"><span class="num">13</span><div class="step-body">
+          <h3>Probar la respuesta</h3>
+          <p class="start">El correo de prueba que acaba de llegar a <span class="ph" data-k="gmail">tucuenta@gmail.com</span></p>
+          <ol class="do">
+            <li>Abrilo y hacé clic en <span class="ui">Responder</span> (abajo del mensaje).</li>
+            <li>Mirá la parte de arriba de la respuesta: el remitente tiene que ser <code><span data-k="nombre">Nombre del negocio</span> &lt;<span data-k="email">contacto@tudominio.com</span>&gt;</code>. Si ves el Gmail, hacé clic sobre él y elegí la dirección del dominio.</li>
+            <li>Escribí cualquier cosa y hacé clic en <span class="ui">Enviar</span>.</li>
+            <li>Volvé a la casilla de prueba y abrí la respuesta. Debajo del nombre del remitente, hacé clic en la flechita que está al lado de “para mí” para ver los detalles.</li>
+          </ol>
+          <p class="result">Se ve <code>de: <span data-k="email">contacto@tudominio.com</span> a través de gmail.com</code> y <code>responder a: <span data-k="email">contacto@tudominio.com</span></code>.</p>
+          <div class="note info"><strong>Qué ve el destinatario</strong><p>El remitente visible es la dirección del dominio. El “a través de gmail.com” aparece en algunos programas de correo y, en los encabezados técnicos completos (“Mostrar original”), sigue figurando la cuenta Gmail. Para la mayoría de los usos no importa; si molesta, la alternativa es un servicio pago como Google Workspace.</p></div>
+        </div></li>
+      </ol>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><h2>Si algo falla</h2></div>
+      <div class="errs">
+        <div class="err"><h3>No aparece “Contraseñas de aplicaciones”</h3><p>Falta activar la verificación en dos pasos (paso 5). Sin eso la opción no figura ni en la búsqueda ni en la URL directa.</p></div>
+        <div class="err"><h3>Gmail da error al añadir la cuenta</h3><p>Revisá los tres campos del paso 8: servidor <code>smtp.gmail.com</code> (no el de Cloudflare, que solo recibe), usuario con el Gmail completo, y la clave de 16 caracteres en lugar de la contraseña normal de Google.</p></div>
+        <div class="err"><h3>No llegan correos a la dirección nueva</h3><p>El Gmail de destino no se verificó en Cloudflare (paso 4) o la regla está desactivada. Revisá también la carpeta de spam.</p></div>
+        <div class="err"><h3>No llega el correo de confirmación de Gmail (paso 9)</h3><p>Es el mismo problema que el anterior: el reenvío todavía no funciona. Arreglá el paso 4 y pedí que se reenvíe el correo desde la ventana de Gmail.</p></div>
+        <div class="err"><h3>Los correos tardan</h3><p>Pasar por Cloudflare agrega unos segundos. Es normal.</p></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><h2>Lista de verificación</h2></div>
+      <ul class="check">
+        <li><label for="c1"><input type="checkbox" id="c1"><span>Email Routing activo con MX y TXT (SPF) de Cloudflare.</span></label></li>
+        <li><label for="c2"><input type="checkbox" id="c2"><span>Regla <span class="ph" data-k="email">contacto@tudominio.com</span> → <span class="ph" data-k="gmail">tucuenta@gmail.com</span> en estado Active y destino verificado.</span></label></li>
+        <li><label for="c3"><input type="checkbox" id="c3"><span>Verificación en dos pasos activa en Google.</span></label></li>
+        <li><label for="c4"><input type="checkbox" id="c4"><span>Contraseña de aplicación creada.</span></label></li>
+        <li><label for="c5"><input type="checkbox" id="c5"><span>“Enviar como” con <code>smtp.gmail.com</code>, puerto 587, TLS y usuario Gmail completo.</span></label></li>
+        <li><label for="c6"><input type="checkbox" id="c6"><span>Dirección confirmada desde el correo del Equipo de Gmail.</span></label></li>
+        <li><label for="c7"><input type="checkbox" id="c7"><span>“Responder desde la misma dirección…” seleccionado.</span></label></li>
+        <li><label for="c8"><input type="checkbox" id="c8"><span>Filtro y etiqueta creados.</span></label></li>
+        <li><label for="c9"><input type="checkbox" id="c9"><span>Prueba de recepción y respuesta correcta.</span></label></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== TUTORIAL 2 ===================== -->
+  <section class="panel" id="t2" role="tabpanel" aria-labelledby="tab-t2" hidden>
+    <div class="intro hide-in-client">
+      <h2>Tutorial 2 · Vos hacés Cloudflare, el cliente hace Google</h2>
+      <p>Para cuando el cliente configura su propia cuenta de Google. Así nunca tenés que pedirle contraseñas. El orden importa: el cliente no puede terminar su parte hasta que tu reenvío esté funcionando.</p>
+    </div>
+
+    <div class="phase hide-in-client">
+      <div class="phase-head"><h2>Orden de trabajo</h2></div>
+      <ol class="seq">
+        <li><span class="role tec">Técnico</span><div class="s-text">Pedirle los datos al cliente <span>· Gmail, alias, nombre visible, y si el dominio ya tiene correo</span></div></li>
+        <li><span class="role tec">Técnico</span><div class="s-text">Activar Email Routing y crear la dirección <span>· pasos 1 a 4 del tutorial 1</span></div></li>
+        <li class="c"><span class="role cli">Cliente</span><div class="s-text">Confirmar el correo de verificación de Cloudflare <span>· paso C1</span></div></li>
+        <li class="c"><span class="role cli">Cliente</span><div class="s-text">Contraseña de aplicación, “Enviar como” y ajustes <span>· pasos C2 a C7</span></div></li>
+        <li><span class="role tec">Técnico</span><div class="s-text">Mandar el correo de prueba <span>· paso T4</span></div></li>
+        <li class="c"><span class="role cli">Cliente</span><div class="s-text">Responder la prueba y avisar <span>· paso C8</span></div></li>
+      </ol>
+    </div>
+
+    <div class="phase hide-in-client">
+      <div class="phase-head"><span class="role tec">Técnico</span><h2>Tu parte</h2></div>
+      <ol class="steps">
+        <li class="step"><span class="num">T1</span><div class="step-body">
+          <h3>Pedir los datos al cliente</h3>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Dato</th><th>Ejemplo</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Su Gmail</td><td><span class="ph" data-k="gmail">tucuenta@gmail.com</span></td></tr>
+              <tr><td class="k">Dirección que quiere</td><td><span class="ph" data-k="email">contacto@tudominio.com</span></td></tr>
+              <tr><td class="k">Nombre visible al enviar</td><td><span class="ph" data-k="nombre">Nombre del negocio</span></td></tr>
+              <tr><td class="k">¿El dominio ya recibe correo en otro lado?</td><td>Si dice que sí, frená y revisá los MX antes de seguir.</td></tr>
+              <tr><td class="k">¿Tiene la verificación en dos pasos activada?</td><td>Si no sabe, no pasa nada: su paso C2 lo revisa.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="path">Cargá estos datos arriba en “Datos de esta configuración” y la guía del cliente sale completa con sus valores.</p>
+        </div></li>
+        <li class="step"><span class="num">T2</span><div class="step-body">
+          <h3>Activar Email Routing</h3>
+          <p class="start"><a class="url" href="https://dash.cloudflare.com" target="_blank" rel="noopener">https://dash.cloudflare.com</a></p>
+          <p>Hacé los pasos 1, 2 y 3 del tutorial 1: abrir el dominio, <span class="ui">Email</span> → <span class="ui">Email Routing</span> → <span class="ui">Enable Email Routing</span> → <span class="ui">Add records and enable</span>.</p>
+          <p class="result"><code>Routing status: Configured</code> en verde.</p>
+        </div></li>
+        <li class="step"><span class="num">T3</span><div class="step-body">
+          <h3>Crear la dirección con destino al Gmail del cliente</h3>
+          <p class="start">Email Routing → pestaña <b>Routing rules</b></p>
+          <p>Hacé el paso 4 del tutorial 1, con <span class="ui">Destination</span> = <span class="ph" data-k="gmail">tucuenta@gmail.com</span> (escribilo completo si no aparece en la lista).</p>
+          <div class="note"><strong>Avisale al cliente ahora</strong><p>Cloudflare le manda a su Gmail un correo de verificación. Hasta que lo confirme (su paso C1), el reenvío no funciona y su paso C6 se traba. Podés seguir el estado en la pestaña <span class="ui">Destination addresses</span>: tiene que pasar de <code>Pending</code> a <code>Verified</code>.</p></div>
+        </div></li>
+        <li class="step"><span class="num">T4</span><div class="step-body">
+          <h3>Mandar el correo de prueba</h3>
+          <p class="start">Tu propia casilla de correo, cuando el cliente te avise que terminó el paso C7</p>
+          <ol class="do">
+            <li>Mandá un correo a <span class="ph" data-k="email">contacto@tudominio.com</span> con asunto <code>Prueba</code>.</li>
+            <li>Avisale al cliente que ya lo mandaste para que haga su paso C8.</li>
+            <li>Cuando llegue su respuesta, abrila y desplegá los detalles del remitente (flechita al lado de “para mí”).</li>
+          </ol>
+          <p class="result">El remitente es <code><span data-k="nombre">Nombre del negocio</span> &lt;<span data-k="email">contacto@tudominio.com</span>&gt;</code>, igual que en el paso 13 del tutorial 1.</p>
+        </div></li>
+      </ol>
+      <p class="path">Si el cliente se traba, la sección “Si algo falla” del tutorial 1 cubre los mismos errores.</p>
+    </div>
+
+    <div class="toolbar hide-print">
+      <button class="print-btn" id="dl-guide" type="button" disabled>Descargar guía para imprimir</button>
+      <button class="toggle" id="only-client" type="button" aria-pressed="false">Mostrar solo la guía del cliente</button>
+      <p id="dl-msg" role="status">Descarga solo la guía del cliente, con los datos que cargaste arriba. Al abrir el archivo se abre la ventana de impresión; ahí también podés elegir “Guardar como PDF”.</p>
+    </div>
+
+    <!-- Guía del cliente -->
+    <article class="client-doc" id="cliente">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span class="eyebrow">Guía para el cliente</span>
+        <h2>Configurar <span data-k="email">contacto@tudominio.com</span> en tu Gmail</h2>
+        <p style="color:var(--muted)">Te hemos dejado listo el dominio para que los correos lleguen a tu Gmail. Te faltan estos pasos en tu cuenta de Google, que solo podés hacer vos. Lleva unos 15 minutos.</p>
+      </div>
+
+      <div class="datos">
+        <div><span>Tu nueva dirección</span><b class="mono" data-k="email">contacto@tudominio.com</b></div>
+        <div><span>Tu Gmail</span><b class="mono" data-k="gmail">tucuenta@gmail.com</b></div>
+        <div><span>Nombre que verán al recibir tus correos</span><b data-k="nombre">Nombre del negocio</b></div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-head"><h3>Antes de empezar</h3></div>
+        <ul class="reqs">
+          <li><span>Usá una <b>computadora</b> (no el celular) con Google Chrome. Algunos pasos no existen en la app de Gmail.</span></li>
+          <li><span>Tené a mano tu celular: Google puede mandarte un código o pedirte que confirmes en el teléfono.</span></li>
+          <li><span>Sabé la contraseña de tu cuenta de Google.</span></li>
+          <li><span>Las direcciones que empiezan con <code>https://</code> se escriben en la barra de arriba del navegador, donde normalmente ves el nombre de las páginas, y después apretás Enter.</span></li>
+          <li><span>Si en el navegador tenés más de una cuenta de Google abierta, en cada página fijate arriba a la derecha que la foto o inicial sea la de <span class="ph" data-k="gmail">tucuenta@gmail.com</span>. Si no, hacé clic en la foto y elegí esa cuenta.</span></li>
+        </ul>
+        <div class="note info"><strong>Tus contraseñas son tuyas</strong><p>En ningún paso tenés que compartir contraseñas con nadie, tampoco con nosotros.</p></div>
+      </div>
+
+      <ol class="steps">
+        <li class="step client"><span class="num">C1</span><div class="step-body">
+          <h3>Confirmar el correo de Cloudflare</h3>
+          <p class="start"><a class="url" href="https://mail.google.com" target="_blank" rel="noopener">https://mail.google.com</a> (tu Gmail)</p>
+          <ol class="do">
+            <li>En el menú de la izquierda, hacé clic en <span class="ui">Recibidos</span>.</li>
+            <li>Buscá un correo de <b>Cloudflare</b> que pide verificar tu dirección. Si no lo ves, escribí <code>cloudflare</code> en la barra de búsqueda de arriba de Gmail y apretá Enter.</li>
+            <li>Si tampoco aparece, en el menú de la izquierda hacé clic en <span class="ui">Más</span> → <span class="ui">Spam</span> y buscalo ahí.</li>
+            <li>Abrí el correo y hacé clic en el botón <span class="ui">Verify email address</span>.</li>
+          </ol>
+          <p class="result">Se abre una página de Cloudflare que confirma la verificación. Desde ahora, lo que se envíe a <span class="ph" data-k="email">contacto@tudominio.com</span> llega a tu Gmail.</p>
+          <p class="path"><b>Si no encontrás el correo</b>, avisanos antes de seguir: sin este paso el resto no funciona.</p>
+        </div></li>
+        <li class="step client"><span class="num">C2</span><div class="step-body">
+          <h3>Revisar la verificación en dos pasos</h3>
+          <p class="start"><a class="url" href="https://myaccount.google.com/signinoptions/two-step-verification" target="_blank" rel="noopener">https://myaccount.google.com/signinoptions/two-step-verification</a></p>
+          <ol class="do">
+            <li>Escribí esa dirección en el navegador. Google puede pedirte tu contraseña: escribila.</li>
+            <li>Mirá lo que dice la página:
+              <ul>
+                <li>Si dice que la verificación en dos pasos <b>está activada</b> (y ofrece un botón para desactivarla), está todo bien. No toques nada y pasá al paso C3.</li>
+                <li>Si ves un botón para <b>activar</b> la verificación en dos pasos, hacé clic y seguí lo que pide Google: normalmente tu número de celular y un código que te llega por SMS.</li>
+              </ul>
+            </li>
+          </ol>
+        </div></li>
+        <li class="step client"><span class="num">C3</span><div class="step-body">
+          <h3>Crear una contraseña de aplicación</h3>
+          <p class="start"><a class="url" href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">https://myaccount.google.com/apppasswords</a></p>
+          <ol class="do">
+            <li>Escribí esa dirección en el navegador. Google te va a pedir confirmar que sos vos (contraseña o confirmación en el celular).</li>
+            <li>Ves la página <span class="ui">Contraseñas de aplicaciones</span>. Hay un campo de texto que dice <span class="ui">Nombre de la app</span>. Hacé clic en él y escribí <span class="ph" data-k="email">contacto@tudominio.com</span>.</li>
+            <li>Hacé clic en el botón azul <span class="ui">Crear</span>, a la derecha del campo.</li>
+            <li>Aparece una ventana con una clave de 16 letras en un recuadro amarillo. <b>No hagas clic en <span class="ui">Listo</span> todavía.</b></li>
+          </ol>
+          <div class="note"><strong>Dejá esta pestaña abierta</strong><p>Cuando cerrás esa ventana, Google no vuelve a mostrar la clave. Vas a necesitarla en el paso C5, así que seguí en otra pestaña. Si preferís, copiala en un bloc de notas temporal y borrala cuando termines. No se la envíes a nadie.</p></div>
+          <p class="path"><b>Si la página dice que la opción no está disponible</b>, la verificación en dos pasos no está activada. Volvé al paso C2.</p>
+        </div></li>
+        <li class="step client"><span class="num">C4</span><div class="step-body">
+          <h3>Abrir “Enviar como” en la configuración de Gmail</h3>
+          <p class="start">Una <b>pestaña nueva</b>: apretá Ctrl+T (sin cerrar la pestaña de la clave) y escribí <a class="url" href="https://mail.google.com/mail/u/0/#settings/accounts" target="_blank" rel="noopener">https://mail.google.com/mail/u/0/#settings/accounts</a></p>
+          <ol class="do">
+            <li>Se abre la configuración de Gmail. En la fila de pestañas de arriba tiene que estar subrayada <span class="ui">Cuentas e importación</span>.</li>
+            <li>Bajá con la ruedita del mouse hasta la sección que dice <span class="ui">Enviar como:</span>. Ahí figura tu Gmail.</li>
+            <li>Debajo de tu Gmail, hacé clic en el enlace azul <span class="ui">Añadir otra dirección de correo electrónico</span>.</li>
+          </ol>
+          <p class="path"><b>Si se abrió otra cuenta</b>: entrá a <a class="url" href="https://mail.google.com" target="_blank" rel="noopener">https://mail.google.com</a> con tu cuenta, hacé clic en el engranaje (arriba a la derecha) → botón <span class="ui">Ver todos los ajustes</span> → pestaña <span class="ui">Cuentas e importación</span>.</p>
+          <p class="path"><b>Si no se abre ninguna ventana</b>, Chrome la bloqueó. A la derecha de la barra de direcciones aparece un ícono de ventana tachada: hacé clic → <span class="ui">Permitir siempre ventanas emergentes de mail.google.com</span> → <span class="ui">Listo</span>, y volvé a hacer clic en el enlace azul.</p>
+          <p class="result">Se abre una <b>ventana chica aparte</b>, con borde amarillo. Si de repente no la ves, puede haber quedado detrás de Chrome: buscala en la barra de tareas de abajo.</p>
+        </div></li>
+        <li class="step client"><span class="num">C5</span><div class="step-body">
+          <h3>Completar los datos en la ventana amarilla</h3>
+          <p class="start">La ventana amarilla del paso C4</p>
+          <p><b>Primera pantalla</b></p>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Campo</th><th>Qué hacer</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Nombre</td><td>Borrá lo que haya y escribí <span class="ph" data-k="nombre">Nombre del negocio</span></td></tr>
+              <tr><td class="k">Dirección de correo electrónico</td><td>Escribí <span class="ph" data-k="email">contacto@tudominio.com</span></td></tr>
+              <tr><td class="k">Tratar como un alias</td><td>Dejá la casilla marcada (ya viene así)</td></tr>
+            </tbody>
+          </table></div>
+          <p>Hacé clic en <span class="ui">Siguiente paso »</span>.</p>
+          <p><b>Segunda pantalla.</b> Gmail rellena dos campos con datos que <b>no sirven</b>. En cada campo: hacé clic dentro, apretá Ctrl+A (selecciona todo), apretá Borrar y escribí lo de la tabla.</p>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Campo</th><th>Tiene que quedar</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Servidor SMTP</td><td><code>smtp.gmail.com</code> (Gmail pone otra cosa: borrala)</td></tr>
+              <tr><td class="k">Puerto</td><td><code>587</code> (ya viene así, no lo toques)</td></tr>
+              <tr><td class="k">Nombre de usuario</td><td><span class="ph" data-k="gmail">tucuenta@gmail.com</span> completo, con <code>@gmail.com</code> (Gmail pone solo una parte: borrala)</td></tr>
+              <tr><td class="k">Contraseña</td><td>La clave de 16 letras del paso C3. Volvé a esa pestaña, seleccioná las letras con el mouse, apretá Ctrl+C, volvé a la ventana amarilla, hacé clic en el campo y apretá Ctrl+V. <b>No es tu contraseña normal de Google.</b></td></tr>
+              <tr><td class="k">Conexión</td><td>Dejá elegida <span class="ui">Conexión segura mediante TLS (recomendado)</span></td></tr>
+            </tbody>
+          </table></div>
+          <p>Hacé clic en <span class="ui">Añadir cuenta »</span>. <b>No cierres la ventana amarilla.</b></p>
+          <p>Ahora sí podés volver a la pestaña de Google, hacer clic en <span class="ui">Listo</span> y borrar la clave si la habías anotado.</p>
+          <p class="path"><b>Si aparece un error en rojo</b>, revisá: servidor <code>smtp.gmail.com</code>, usuario con el Gmail completo y la clave de 16 letras. Si sigue fallando, pegá la clave sin espacios. Si no se arregla, avisanos.</p>
+        </div></li>
+        <li class="step client"><span class="num">C6</span><div class="step-body">
+          <h3>Confirmar la dirección</h3>
+          <p class="start">La pestaña de Gmail (no la ventana amarilla). Si la cerraste: <a class="url" href="https://mail.google.com" target="_blank" rel="noopener">https://mail.google.com</a></p>
+          <ol class="do">
+            <li>En el menú de la izquierda, hacé clic en <span class="ui">Recibidos</span>.</li>
+            <li>Esperá un correo del <span class="ui">Equipo de Gmail</span> con asunto <code>Gmail Confirmation - Send Mail as <span data-k="email">contacto@tudominio.com</span></code>. Puede tardar 1 o 2 minutos; apretá F5 para actualizar.</li>
+            <li>Abrí el correo y hacé clic en el enlace largo azul que tiene en el texto.</li>
+            <li>Se abre una pestaña nueva. Hacé clic en el botón <span class="ui">Confirm</span> (o <span class="ui">Confirmar</span>).</li>
+          </ol>
+          <p class="path"><b>Otra forma:</b> ese correo trae un código de números. Copialo, pegalo en el campo de la ventana amarilla y hacé clic en <span class="ui">Verificar</span>.</p>
+          <p class="result">Ves el mensaje <code>Confirmation Success!</code>. Cerrá esa pestaña y la ventana amarilla.</p>
+          <p class="path"><b>Si el correo no llega en 5 minutos</b> (revisá también <span class="ui">Spam</span>), avisanos.</p>
+        </div></li>
+        <li class="step client"><span class="num">C7</span><div class="step-body">
+          <h3>Dos ajustes finales</h3>
+          <p><b>A. Responder siempre desde la dirección correcta</b></p>
+          <p class="start"><a class="url" href="https://mail.google.com/mail/u/0/#settings/accounts" target="_blank" rel="noopener">https://mail.google.com/mail/u/0/#settings/accounts</a> (la misma página del paso C4)</p>
+          <ol class="do">
+            <li>Comprobá que arriba esté subrayada la pestaña <span class="ui">Cuentas e importación</span>.</li>
+            <li>Bajá hasta la sección <span class="ui">Enviar como:</span>. Ahora tiene que haber dos direcciones: tu Gmail y <span class="ph" data-k="email">contacto@tudominio.com</span>.</li>
+            <li>Debajo de esas dos direcciones hay una línea que dice <span class="ui">Al responder a un mensaje:</span> con dos opciones redondas. Hacé clic en <span class="ui">Responder desde la misma dirección a la que se envió el mensaje</span>.</li>
+          </ol>
+          <p class="path">Puede que ya esté elegida; está bien. En esta pestaña se guarda solo, no hay botón de guardar.</p>
+
+          <p><b>B. Etiqueta para reconocer estos correos</b> (recomendado)</p>
+          <p class="start"><a class="url" href="https://mail.google.com/mail/u/0/#settings/filters" target="_blank" rel="noopener">https://mail.google.com/mail/u/0/#settings/filters</a></p>
+          <ol class="do">
+            <li>Se abre la pestaña <span class="ui">Filtros y direcciones bloqueadas</span>. Hacé clic en el enlace <span class="ui">Crear un filtro nuevo</span>.</li>
+            <li>Arriba aparece un recuadro con varios campos. En el campo <span class="ui">Para</span> escribí <span class="ph" data-k="email">contacto@tudominio.com</span>. Dejá los demás vacíos.</li>
+            <li>Abajo a la derecha del recuadro, hacé clic en <span class="ui">Crear filtro</span> (es texto, al lado del botón azul <span class="ui">Buscar</span>; no hagas clic en Buscar).</li>
+            <li>Aparece una lista de casillas. Marcá <span class="ui">Aplicar la etiqueta:</span>.</li>
+            <li>A su derecha, abrí el desplegable <span class="ui">Elegir etiqueta…</span> y elegí <span class="ui">Etiqueta nueva…</span>.</li>
+            <li>En la ventanita, escribí <span class="ph" data-k="email">contacto@tudominio.com</span> y hacé clic en <span class="ui">Crear</span>.</li>
+            <li>Hacé clic en el botón azul <span class="ui">Crear filtro</span>.</li>
+          </ol>
+          <p class="result">El filtro aparece en la lista. Cuando termines, <b>avisanos</b> para hacer la prueba.</p>
+        </div></li>
+        <li class="step client"><span class="num">C8</span><div class="step-body">
+          <h3>Responder el correo de prueba</h3>
+          <p class="start"><a class="url" href="https://mail.google.com" target="_blank" rel="noopener">https://mail.google.com</a> → <span class="ui">Recibidos</span></p>
+          <ol class="do">
+            <li>Te vamos a mandar un correo con asunto <code>Prueba</code>. Va a tener la etiqueta gris <span class="ph" data-k="email">contacto@tudominio.com</span>. Abrilo.</li>
+            <li>Abajo del mensaje, hacé clic en <span class="ui">Responder</span>.</li>
+            <li>Arriba de la respuesta, el remitente tiene que ser <span class="ph" data-k="email">contacto@tudominio.com</span>. Si ves tu Gmail, hacé clic sobre él y elegí <span class="ph" data-k="email">contacto@tudominio.com</span>.</li>
+            <li>Escribí cualquier cosa y hacé clic en <span class="ui">Enviar</span>.</li>
+          </ol>
+          <p class="result">Listo, ya está configurado.</p>
+          <div class="note info"><strong>Para escribir un correo nuevo desde tu dirección</strong><p>Hacé clic en <span class="ui">Redactar</span> (arriba a la izquierda). En la ventana nueva, hacé clic en tu Gmail que aparece en el campo <span class="ui">De</span> y elegí <span class="ph" data-k="email">contacto@tudominio.com</span>. Si no ves el campo <span class="ui">De</span>, hacé clic primero en <span class="ui">Para</span>.</p></div>
+        </div></li>
+      </ol>
+    </article>
+  </section>
+
+  <footer class="hide-in-client">Basado en un tutorial en video sobre Cloudflare Email Routing con Gmail. Los nombres de botones de Cloudflare están en inglés porque su panel no tiene versión en español; los de Google pueden variar levemente según el idioma de la cuenta.</footer>
+</div>
+
+<script>
+(function(){
+  var DEF={dominio:"tudominio.com",alias:"contacto",gmail:"tucuenta@gmail.com",nombre:"Nombre del negocio"};
+  var KEY="correo-dominio-datos";
+  var data={};
+  try{data=JSON.parse(localStorage.getItem(KEY)||"{}")||{};}catch(e){data={};}
+  var inputs=document.querySelectorAll("[data-f]");
+  function val(k){var v=(data[k]||"").trim();return v||DEF[k];}
+  function render(){
+    var d=val("dominio").replace(/^@/,""), a=val("alias").replace(/@.*$/,"");
+    var m={dominio:d,alias:a,gmail:val("gmail"),nombre:val("nombre"),email:a+"@"+d};
+    document.querySelectorAll("[data-k]").forEach(function(el){el.textContent=m[el.getAttribute("data-k")];});
+  }
+  inputs.forEach(function(inp){
+    var k=inp.getAttribute("data-f");
+    inp.value=data[k]||"";
+    inp.addEventListener("input",function(){data[k]=inp.value;try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}render();});
+  });
+  document.getElementById("reset").addEventListener("click",function(){
+    data={};try{localStorage.removeItem(KEY);}catch(e){}
+    inputs.forEach(function(i){i.value="";});render();
+  });
+  render();
+
+  var tabs=[document.getElementById("tab-t1"),document.getElementById("tab-t2")];
+  var panels=[document.getElementById("t1"),document.getElementById("t2")];
+  function show(i){
+    tabs.forEach(function(t,j){t.setAttribute("aria-selected",j===i?"true":"false");});
+    panels.forEach(function(p,j){p.hidden=j!==i;});
+  }
+  tabs.forEach(function(t,i){t.addEventListener("click",function(){show(i);});});
+  var h=(location.hash||"").slice(1);
+  if(h==="t2"||h==="cliente")show(1);
+
+  var tog=document.getElementById("only-client");
+  tog.addEventListener("click",function(){
+    var on=!document.body.classList.contains("only-client");
+    document.body.classList.toggle("only-client",on);
+    tog.setAttribute("aria-pressed",on?"true":"false");
+    tog.textContent=on?"Volver a la vista completa":"Mostrar solo la guía del cliente";
+    if(on)document.getElementById("cliente").scrollIntoView({block:"start"});
+  });
+
+  var dl=document.getElementById("dl-guide"), msg=document.getElementById("dl-msg"), downloads=null;
+  function noDownloads(){dl.hidden=true;msg.textContent="La descarga no está disponible en esta vista. Abrí la página desde claude.ai para descargar la guía.";}
+  var cl=window.claude;
+  if(cl&&typeof cl.use==="function"){
+    cl.use("downloads").then(function(d){downloads=d;if(d){dl.disabled=false;}else{noDownloads();}}).catch(noDownloads);
+  }else{noDownloads();}
+  function buildGuide(){
+    var css=document.getElementById("main-css").textContent;
+    var font=document.querySelector('link[href*="fonts.googleapis.com/css2"]');
+    var art=document.getElementById("cliente").cloneNode(true);
+    art.removeAttribute("id");
+    var email=document.querySelector('#cliente [data-k="email"]').textContent;
+    var safe=email.replace(/[<>&"]/g,"");
+    var extra="body{padding-block:24px}.tip{max-width:820px;margin:0 auto 16px;font-size:.9rem;color:var(--muted)}"+
+      "@page{margin:14mm}.note,.start,.ph,.num{-webkit-print-color-adjust:exact;print-color-adjust:exact}"+
+      "@media print{.tip{display:none}body{padding:0}.client-doc{border:0;padding:0}}";
+    var s="scr"+"ipt";
+    return "<!doctype html><html lang=\"es\" data-theme=\"light\"><head><meta charset=\"utf-8\">"+
+      "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"+
+      "<title>Guía de configuración · "+safe+"</title>"+(font?font.outerHTML:"")+
+      "<style>"+css+"\n"+extra+"</style></head><body><div class=\"wrap\">"+
+      "<p class=\"tip\">Si no se abrió la ventana de impresión, apretá Ctrl+P.</p>"+art.outerHTML+"</div>"+
+      "<"+s+">window.addEventListener('load',function(){setTimeout(function(){window.print()},500)});</"+s+"></body></html>";
+  }
+  dl.addEventListener("click",function(){
+    if(!downloads)return;
+    var email=document.querySelector('#cliente [data-k="email"]').textContent;
+    var name="guia-correo-"+email.replace(/[^a-z0-9.-]+/gi,"-")+".html";
+    dl.disabled=true;
+    downloads.save({filename:name,data:buildGuide()}).then(function(){
+      msg.textContent="Guía descargada. Abrí el archivo y se abre la ventana de impresión.";
+    }).catch(function(e){
+      var c=e&&e.code;
+      msg.textContent=c==="declined"?"Descarga cancelada.":c==="rate_limited"?"Ya hay una descarga esperando confirmación. Esperá un momento y probá de nuevo.":"No se pudo descargar la guía en esta vista.";
+    }).then(function(){dl.disabled=false;});
+  });
+})();
+</script>

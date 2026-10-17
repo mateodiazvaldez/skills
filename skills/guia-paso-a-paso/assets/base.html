@@ -1,0 +1,446 @@
+<title>[EJEMPLO] Nombre de la guía</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style id="main-css">
+/* Layout: columna de lectura única; pasos numerados con "Empezá en" y "Resultado"; chips de rol (técnico / cliente) en el tutorial 2 */
+:root{
+  --bg:#f5f8f7; --surface:#ffffff; --ink:#14201f; --muted:#576866; --line:#d7e1df;
+  --accent:#0d6b63; --accent-soft:#e0f0ed;
+  --client:#7041a8; --client-soft:#f1eaf9;
+  --warn:#8f5400; --warn-soft:#fbefd9;
+  --code-bg:#eef3f2;
+  --f-display:"Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1615; --surface:#15201e; --ink:#e2ebe9; --muted:#95a7a4; --line:#293735;
+  --accent:#57c4b7; --accent-soft:#12302c;
+  --client:#bf9cec; --client-soft:#271e33;
+  --warn:#eab463; --warn-soft:#30250f;
+  --code-bg:#1b2826; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e1615; --surface:#15201e; --ink:#e2ebe9; --muted:#95a7a4; --line:#293735;
+  --accent:#57c4b7; --accent-soft:#12302c;
+  --client:#bf9cec; --client-soft:#271e33;
+  --warn:#eab463; --warn-soft:#30250f;
+  --code-bg:#1b2826; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:32px 72px}
+.wrap{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(1.9rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.4rem;font-weight:700;letter-spacing:-.01em}
+h3{font-size:1.08rem;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+a.url{font-family:var(--f-mono);font-size:.9em;font-weight:500;overflow-wrap:anywhere}
+.lede{color:var(--muted);max-width:62ch;margin-top:10px}
+.eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+code{background:var(--code-bg);padding:1px 6px;border-radius:4px;overflow-wrap:anywhere}
+.ph{font-family:var(--f-mono);font-size:.88em;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:4px;overflow-wrap:anywhere;font-weight:500}
+.ui{font-weight:600}
+.ui-en{color:var(--muted);font-weight:400}
+
+/* Personalización */
+.custom{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.custom-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.custom-head p{color:var(--muted);font-size:.9rem}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.fields label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);font-weight:600}
+.fields input{font:inherit;font-family:var(--f-mono);font-size:.9rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-width:0}
+.fields input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.btn-link{background:none;border:0;color:var(--accent);font:inherit;font-size:.85rem;cursor:pointer;padding:0;text-decoration:underline}
+
+/* Tabs */
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font:inherit;font-weight:600;font-size:.95rem;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:10px 12px 9px;cursor:pointer;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.tab small{display:block;font-family:var(--f-mono);font-weight:400;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+section.panel{display:flex;flex-direction:column;gap:30px}
+.intro{display:flex;flex-direction:column;gap:10px;max-width:66ch}
+.intro p{color:var(--muted)}
+
+/* Requisitos / avisos */
+.reqs{display:flex;flex-direction:column;gap:8px;padding:0;margin:0;list-style:none}
+.reqs li{display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start}
+.reqs li::before{content:"";width:12px;height:12px;border:2px solid var(--accent);border-radius:3px;margin-top:6px}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:12px 14px;border-radius:0 6px 6px 0;display:flex;flex-direction:column;gap:4px}
+.note strong{color:var(--warn)}
+.note.info{border-left-color:var(--accent);background:var(--accent-soft)}
+.note.info strong{color:var(--accent)}
+
+/* Fases y pasos */
+.phase{display:flex;flex-direction:column;gap:14px}
+.phase-head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.phase-head .eyebrow{color:var(--muted)}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.step{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 0;border-bottom:1px dashed var(--line)}
+.step:last-child{border-bottom:0}
+.num{font-family:var(--f-mono);font-weight:500;font-size:.9rem;color:var(--accent);width:36px;height:36px;border:1.5px solid var(--accent);border-radius:50%;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.step.client .num{color:var(--client);border-color:var(--client)}
+.step-body{display:flex;flex-direction:column;gap:8px;min-width:0}
+.step-title{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.path{font-size:.9rem;color:var(--muted)}
+.path b{color:var(--ink);font-weight:600}
+.do{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.result{font-size:.92rem;display:grid;grid-template-columns:auto 1fr;gap:8px}
+.start{font-size:.92rem;background:var(--code-bg);padding:8px 12px;border-radius:6px;overflow-wrap:anywhere}
+.start::before{content:"Empezá en";display:inline-block;margin-right:10px;font-family:var(--f-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:500}
+.step.client .start::before{color:var(--client)}
+.do ul{margin:4px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.result::before{content:"Resultado";font-family:var(--f-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding-top:4px}
+.step.client .result::before{color:var(--client)}
+
+/* Tabla de campos */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.72rem;font-family:var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.k{font-weight:600;white-space:nowrap}
+.bad{text-decoration:line-through;color:var(--muted)}
+
+/* Roles */
+.role{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:999px;font-weight:500;white-space:nowrap}
+.role.tec{background:var(--accent-soft);color:var(--accent)}
+.role.cli{background:var(--client-soft);color:var(--client)}
+
+/* Secuencia */
+.seq{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0;border-left:2px solid var(--line);margin-left:8px}
+.seq li{position:relative;padding:8px 0 8px 22px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline}
+.seq li::before{content:"";position:absolute;left:-7px;top:15px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.seq li.c::before{background:var(--client)}
+.seq .s-text{min-width:0}
+.seq .s-text span{color:var(--muted);font-size:.9rem}
+
+/* Errores */
+.errs{display:flex;flex-direction:column;gap:0}
+.err{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.err:last-child{border-bottom:0}
+.err h3{font-size:.95rem}
+.err p{font-size:.92rem;color:var(--muted)}
+
+/* Checklist */
+.check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.check label{display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start;cursor:pointer}
+.check input{margin-top:5px;accent-color:var(--accent);width:16px;height:16px}
+
+/* Guía del cliente (imprimible) */
+.client-doc{border:1.5px solid var(--client);border-radius:12px;background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:22px}
+.client-doc .eyebrow{color:var(--client)}
+.datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 20px;font-size:.92rem}
+.datos div{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.datos span{font-size:.72rem;font-family:var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.toggle{font:inherit;font-size:.88rem;font-weight:600;border:1px solid var(--client);color:var(--client);background:transparent;border-radius:6px;padding:7px 12px;cursor:pointer}
+.toggle[aria-pressed="true"]{background:var(--client);color:var(--surface)}
+.toggle:focus-visible{outline:2px solid var(--client);outline-offset:2px}
+.toolbar p{font-size:.85rem;color:var(--muted);flex-basis:100%}
+.print-btn{font:inherit;font-size:.88rem;font-weight:600;border:1px solid var(--client);background:var(--client);color:var(--surface);border-radius:6px;padding:7px 14px;cursor:pointer}
+.print-btn:disabled{opacity:.55;cursor:default}
+.print-btn:focus-visible{outline:2px solid var(--client);outline-offset:2px}
+body.only-client .hide-in-client{display:none!important}
+
+footer{color:var(--muted);font-size:.82rem;border-top:1px solid var(--line);padding-top:14px}
+
+@media (max-width:560px){
+  .step{grid-template-columns:36px 1fr;gap:10px}
+  .num{width:30px;height:30px;font-size:.8rem}
+  .err{grid-template-columns:1fr;gap:4px}
+  .client-doc{padding:16px}
+  .result{grid-template-columns:1fr;gap:2px}
+  .result::before{padding-top:0}
+}
+@media print{
+  body{background:#fff;color:#000;padding:0}
+  .custom,.tabs,.toolbar,header,.hide-print,footer{display:none!important}
+  section.panel[hidden]{display:none!important}
+  .client-doc{border:0;padding:0}
+  .step{break-inside:avoid}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<!--
+  BASE DE LA SKILL guia-paso-a-paso
+  Copiá este archivo y reemplazá todo lo marcado con [EJEMPLO].
+  - Campos configurables: <input data-f="clave" placeholder="valor por defecto">
+  - Menciones en el texto: <span class="ph" data-k="clave">valor por defecto</span>
+  - Valores combinados (ej. alias + dominio): función derivados() al final.
+  - Publicar con capabilities: {downloads: true} para el botón de imprimir.
+-->
+<div class="wrap">
+  <header class="hide-in-client">
+    <p class="eyebrow">[EJEMPLO] Herramienta A + Herramienta B</p>
+    <h1>[EJEMPLO] Título de la guía en una línea</h1>
+    <p class="lede">[EJEMPLO] Qué se logra al terminar, en una o dos oraciones, usando los datos configurables: <span class="ph" data-k="servicio">Nombre del negocio</span> con la cuenta <span class="ph" data-k="cuenta">tucuenta@gmail.com</span>.</p>
+  </header>
+
+  <div class="custom hide-in-client">
+    <div class="custom-head">
+      <h3>Datos de esta configuración</h3>
+      <p>Lo que escribas acá reemplaza los ejemplos en todo el tutorial. <button class="btn-link" id="reset" type="button">Volver a los ejemplos</button></p>
+    </div>
+    <div class="fields">
+      <!-- [EJEMPLO] Un input por dato variable. El placeholder es el valor por defecto. -->
+      <label for="f-servicio">Nombre visible<input id="f-servicio" data-f="servicio" autocomplete="off" placeholder="Nombre del negocio"></label>
+      <label for="f-cuenta">Cuenta del cliente<input id="f-cuenta" data-f="cuenta" autocomplete="off" spellcheck="false" placeholder="tucuenta@gmail.com"></label>
+    </div>
+  </div>
+
+  <nav class="tabs hide-in-client" role="tablist" aria-label="Tutoriales">
+    <button class="tab" role="tab" id="tab-t1" aria-controls="t1" aria-selected="true" type="button"><small>Tutorial 1</small>Configuración completa</button>
+    <button class="tab" role="tab" id="tab-t2" aria-controls="t2" aria-selected="false" type="button"><small>Tutorial 2</small>Técnico + cliente</button>
+  </nav>
+
+  <!-- ===================== TUTORIAL 1 ===================== -->
+  <section class="panel" id="t1" role="tabpanel" aria-labelledby="tab-t1">
+    <div class="intro">
+      <h2>Tutorial 1 · Hacés todo vos</h2>
+      <p>[EJEMPLO] Para cuando tenés acceso a todas las cuentas al mismo tiempo. Son N pasos en M fases; lleva unos X minutos.</p>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><h2>Antes de empezar</h2></div>
+      <ul class="reqs">
+        <li><span>[EJEMPLO] Requisito con su dato: acceso a <span class="ph" data-k="cuenta">tucuenta@gmail.com</span>.</span></li>
+        <li><span>[EJEMPLO] Algo que tiene que estar activado antes, y por qué.</span></li>
+      </ul>
+      <div class="note">
+        <strong>[EJEMPLO] Advertencia que la fuente no menciona</strong>
+        <p>Qué se rompe si no se revisa y cómo revisarlo, con la URL de inicio.</p>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><span class="eyebrow">Fase 1</span><h2>[EJEMPLO] Nombre de la fase</h2></div>
+      <ol class="steps">
+        <li class="step"><span class="num">1</span><div class="step-body">
+          <h3>[EJEMPLO] Verbo + objeto</h3>
+          <p class="start"><a class="url" href="https://example.com/pantalla-exacta" target="_blank" rel="noopener">https://example.com/pantalla-exacta</a></p>
+          <ol class="do">
+            <li>Arriba a la derecha, hacé clic en el botón azul <span class="ui">Texto exacto</span>.</li>
+            <li>En el campo <span class="ui">Nombre del campo</span> escribí <span class="ph" data-k="cuenta">tucuenta@gmail.com</span>.</li>
+            <li>Opciones posibles:
+              <ul>
+                <li>Si dice <b>A</b>, pasá al paso 2.</li>
+                <li>Si dice <b>B</b>, hacé clic en <span class="ui">Activar</span> y seguí lo que pide.</li>
+              </ul>
+            </li>
+          </ol>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Campo</th><th>La app pone</th><th>Tiene que quedar</th></tr></thead>
+            <tbody>
+              <tr><td class="k">Campo 1</td><td class="bad">valor-incorrecto</td><td><code>valor-correcto</code></td></tr>
+              <tr><td class="k">Campo 2</td><td>587</td><td><code>587</code> (no lo toques)</td></tr>
+            </tbody>
+          </table></div>
+          <div class="note"><strong>No hagas clic en Listo todavía</strong><p>[EJEMPLO] Para secretos de un solo uso: dejá esta pestaña abierta o copiá el valor en un bloc de notas temporal. Lo usás en el paso N; después cerrá y borrá la nota.</p></div>
+          <p class="path"><b>Si no ves el botón</b>, [EJEMPLO] causa probable y qué hacer, con el paso al que volver.</p>
+          <p class="result">[EJEMPLO] Lo que la persona ve cuando salió bien.</p>
+        </div></li>
+      </ol>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><h2>Si algo falla</h2></div>
+      <div class="errs">
+        <div class="err"><h3>[EJEMPLO] Síntoma que ve la persona</h3><p>Causa y arreglo, señalando el paso.</p></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><h2>Lista de verificación</h2></div>
+      <ul class="check">
+        <li><label for="c1"><input type="checkbox" id="c1"><span>[EJEMPLO] Resultado verificable del paso 1.</span></label></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== TUTORIAL 2 ===================== -->
+  <section class="panel" id="t2" role="tabpanel" aria-labelledby="tab-t2" hidden>
+    <div class="intro hide-in-client">
+      <h2>Tutorial 2 · Vos hacés [X], el cliente hace [Y]</h2>
+      <p>[EJEMPLO] Para cuando el cliente configura sus propias cuentas, así nunca tenés que pedirle contraseñas. Explicar la dependencia que bloquea.</p>
+    </div>
+
+    <div class="phase hide-in-client">
+      <div class="phase-head"><h2>Orden de trabajo</h2></div>
+      <ol class="seq">
+        <li><span class="role tec">Técnico</span><div class="s-text">Pedirle los datos al cliente <span>· paso T1</span></div></li>
+        <li><span class="role tec">Técnico</span><div class="s-text">[EJEMPLO] Tu configuración <span>· pasos 1 a N del tutorial 1</span></div></li>
+        <li class="c"><span class="role cli">Cliente</span><div class="s-text">[EJEMPLO] Su configuración <span>· pasos C1 a CN</span></div></li>
+        <li><span class="role tec">Técnico</span><div class="s-text">Prueba final <span>· paso T3</span></div></li>
+      </ol>
+    </div>
+
+    <div class="phase hide-in-client">
+      <div class="phase-head"><span class="role tec">Técnico</span><h2>Tu parte</h2></div>
+      <ol class="steps">
+        <li class="step"><span class="num">T1</span><div class="step-body">
+          <h3>Pedir los datos al cliente</h3>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Dato</th><th>Ejemplo</th></tr></thead>
+            <tbody>
+              <tr><td class="k">[EJEMPLO] Su cuenta</td><td><span class="ph" data-k="cuenta">tucuenta@gmail.com</span></td></tr>
+              <tr><td class="k">[EJEMPLO] Pregunta que puede frenar todo</td><td>Si dice que sí, frená y revisá X.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="path">Cargá estos datos arriba en “Datos de esta configuración” y la guía del cliente sale completa con sus valores.</p>
+        </div></li>
+        <li class="step"><span class="num">T2</span><div class="step-body">
+          <h3>[EJEMPLO] Tu configuración</h3>
+          <p class="start"><a class="url" href="https://example.com" target="_blank" rel="noopener">https://example.com</a></p>
+          <p>Hacé los pasos 1 a N del tutorial 1.</p>
+          <div class="note"><strong>Avisale al cliente ahora</strong><p>[EJEMPLO] Qué le llega y qué tiene que hacer antes de seguir.</p></div>
+        </div></li>
+      </ol>
+    </div>
+
+    <div class="toolbar hide-print">
+      <button class="print-btn" id="dl-guide" type="button" disabled>Descargar guía para imprimir</button>
+      <button class="toggle" id="only-client" type="button" aria-pressed="false">Mostrar solo la guía del cliente</button>
+      <p id="dl-msg" role="status">Descarga solo la guía del cliente, con los datos que cargaste arriba. Al abrir el archivo se abre la ventana de impresión; ahí también podés elegir “Guardar como PDF”.</p>
+    </div>
+
+    <!-- Guía del cliente: autónoma, en primera del plural, nunca "tu técnico" -->
+    <article class="client-doc" id="cliente">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span class="eyebrow">Guía para el cliente</span>
+        <h2>[EJEMPLO] Configurar <span data-k="servicio">Nombre del negocio</span></h2>
+        <p style="color:var(--muted)">[EJEMPLO] Te hemos dejado listo X. Te faltan estos pasos en tu cuenta, que solo podés hacer vos. Lleva unos N minutos.</p>
+      </div>
+
+      <div class="datos">
+        <div><span>[EJEMPLO] Tu cuenta</span><b class="mono" data-k="cuenta">tucuenta@gmail.com</b></div>
+        <div><span>[EJEMPLO] Nombre visible</span><b data-k="servicio">Nombre del negocio</b></div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-head"><h3>Antes de empezar</h3></div>
+        <ul class="reqs">
+          <li><span>Usá una <b>computadora</b> (no el celular) con Google Chrome.</span></li>
+          <li><span>Tené a mano tu celular: puede llegarte un código o un pedido de confirmación.</span></li>
+          <li><span>Sabé la contraseña de tu cuenta.</span></li>
+          <li><span>Las direcciones que empiezan con <code>https://</code> se escriben en la barra de arriba del navegador, donde normalmente ves el nombre de las páginas, y después apretás Enter.</span></li>
+          <li><span>Si tenés más de una cuenta abierta, en cada página fijate arriba a la derecha que la foto o inicial sea la de <span class="ph" data-k="cuenta">tucuenta@gmail.com</span>.</span></li>
+        </ul>
+        <div class="note info"><strong>Tus contraseñas son tuyas</strong><p>En ningún paso tenés que compartir contraseñas con nadie, tampoco con nosotros.</p></div>
+      </div>
+
+      <ol class="steps">
+        <li class="step client"><span class="num">C1</span><div class="step-body">
+          <h3>[EJEMPLO] Verbo + objeto</h3>
+          <p class="start"><a class="url" href="https://example.com/pantalla-exacta" target="_blank" rel="noopener">https://example.com/pantalla-exacta</a></p>
+          <ol class="do">
+            <li>Escribí esa dirección en el navegador.</li>
+            <li>[EJEMPLO] Dónde está el control, cómo se ve y su texto exacto: hacé clic en el botón azul <span class="ui">Crear</span>, a la derecha del campo.</li>
+          </ol>
+          <p class="result">[EJEMPLO] Lo que ves cuando salió bien.</p>
+          <p class="path"><b>Si no aparece</b>, [EJEMPLO] qué revisar. Si no se arregla, avisanos.</p>
+        </div></li>
+      </ol>
+    </article>
+  </section>
+
+  <footer class="hide-in-client">[EJEMPLO] Fuente de la guía. Los textos de los botones pueden variar levemente según el idioma de la cuenta.</footer>
+</div>
+
+<script>
+(function(){
+  var KEY="guia-datos-"+(document.title||"guia");
+  var data={};
+  try{data=JSON.parse(localStorage.getItem(KEY)||"{}")||{};}catch(e){data={};}
+  var inputs=document.querySelectorAll("[data-f]");
+
+  // Valores combinados a partir de los campos. Editar por guía.
+  // Ejemplo: m.email = m.alias.replace(/@.*$/,"") + "@" + m.dominio.replace(/^@/,"");
+  function derivados(m){ return m; }
+
+  function valores(){
+    var m={};
+    inputs.forEach(function(i){var k=i.getAttribute("data-f");var v=(data[k]||"").trim();m[k]=v||i.placeholder;});
+    return derivados(m);
+  }
+  function render(){
+    var m=valores();
+    document.querySelectorAll("[data-k]").forEach(function(el){var k=el.getAttribute("data-k");if(k in m)el.textContent=m[k];});
+  }
+  inputs.forEach(function(inp){
+    var k=inp.getAttribute("data-f");
+    inp.value=data[k]||"";
+    inp.addEventListener("input",function(){data[k]=inp.value;try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}render();});
+  });
+  document.getElementById("reset").addEventListener("click",function(){
+    data={};try{localStorage.removeItem(KEY);}catch(e){}
+    inputs.forEach(function(i){i.value="";});render();
+  });
+  render();
+
+  // Pestañas
+  var tabs=[document.getElementById("tab-t1"),document.getElementById("tab-t2")];
+  var panels=[document.getElementById("t1"),document.getElementById("t2")];
+  function show(i){
+    tabs.forEach(function(t,j){t.setAttribute("aria-selected",j===i?"true":"false");});
+    panels.forEach(function(p,j){p.hidden=j!==i;});
+  }
+  tabs.forEach(function(t,i){t.addEventListener("click",function(){show(i);});});
+  var h=(location.hash||"").slice(1);
+  if(h==="t2"||h==="cliente")show(1);
+
+  // Vista solo cliente
+  var tog=document.getElementById("only-client");
+  tog.addEventListener("click",function(){
+    var on=!document.body.classList.contains("only-client");
+    document.body.classList.toggle("only-client",on);
+    tog.setAttribute("aria-pressed",on?"true":"false");
+    tog.textContent=on?"Volver a la vista completa":"Mostrar solo la guía del cliente";
+    if(on)document.getElementById("cliente").scrollIntoView({block:"start"});
+  });
+
+  // Descarga para imprimir (capacidad downloads)
+  var dl=document.getElementById("dl-guide"), msg=document.getElementById("dl-msg"), downloads=null;
+  function noDownloads(){dl.hidden=true;msg.textContent="La descarga no está disponible en esta vista. Abrí la página desde claude.ai para descargar la guía.";}
+  var cl=window.claude;
+  if(cl&&typeof cl.use==="function"){
+    cl.use("downloads").then(function(d){downloads=d;if(d){dl.disabled=false;}else{noDownloads();}}).catch(noDownloads);
+  }else{noDownloads();}
+  function titulo(){return document.querySelector("#cliente h2").textContent.trim();}
+  function buildGuide(){
+    var css=document.getElementById("main-css").textContent;
+    var font=document.querySelector('link[href*="fonts.googleapis.com/css2"]');
+    var art=document.getElementById("cliente").cloneNode(true);
+    art.removeAttribute("id");
+    var safe=titulo().replace(/[<>&"]/g,"");
+    var extra="body{padding-block:24px}.tip{max-width:820px;margin:0 auto 16px;font-size:.9rem;color:var(--muted)}"+
+      "@page{margin:14mm}.note,.start,.ph,.num{-webkit-print-color-adjust:exact;print-color-adjust:exact}"+
+      "@media print{.tip{display:none}body{padding:0}.client-doc{border:0;padding:0}}";
+    var s="scr"+"ipt";
+    return "<!doctype html><html lang=\"es\" data-theme=\"light\"><head><meta charset=\"utf-8\">"+
+      "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"+
+      "<title>"+safe+"</title>"+(font?font.outerHTML:"")+
+      "<style>"+css+"\n"+extra+"</style></head><body><div class=\"wrap\">"+
+      "<p class=\"tip\">Si no se abrió la ventana de impresión, apretá Ctrl+P.</p>"+art.outerHTML+"</div>"+
+      "<"+s+">window.addEventListener('load',function(){setTimeout(function(){window.print()},500)});</"+s+"></body></html>";
+  }
+  dl.addEventListener("click",function(){
+    if(!downloads)return;
+    var name="guia-"+titulo().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9.]+/g,"-").replace(/^-+|-+$/g,"")+".html";
+    dl.disabled=true;
+    downloads.save({filename:name,data:buildGuide()}).then(function(){
+      msg.textContent="Guía descargada. Abrí el archivo y se abre la ventana de impresión.";
+    }).catch(function(e){
+      var c=e&&e.code;
+      msg.textContent=c==="declined"?"Descarga cancelada.":c==="rate_limited"?"Ya hay una descarga esperando confirmación. Esperá un momento y probá de nuevo.":"No se pudo descargar la guía en esta vista.";
+    }).then(function(){dl.disabled=false;});
+  });
+})();
+</script>

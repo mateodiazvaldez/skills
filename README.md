@@ -24,6 +24,7 @@ npx skills add mateodiazvaldez/skills -s <skill> -g
 | [`wireframe-a-sitio-playbook`](skills/wireframe-a-sitio-playbook/SKILL.md) | Lleva un wireframe (o sitio básico) con copy y fotos ya definidos a un sitio premium por fases: pulido, re-layout, marca y motion, con puertas de verificación y Lighthouse A/B. No cambia copy ni fotos. Incluye scripts para la imagen de redes y para Lighthouse A/B. | "pasá este wireframe a sitio", "hacelo premium", "modernizá/puli la web", "auditá el branding del sitio" | `npx skills add mateodiazvaldez/skills -s wireframe-a-sitio-playbook` |
 | [`microinteracciones-playbook`](skills/microinteracciones-playbook/SKILL.md) | Fija el flujo y mi estilo de movimiento por defecto (Expresivo, Equilibrado, Mínimo o Personalizado) y lo registra en `docs/MOTION.md`. No enseña a animar. | "agregá microinteracciones", "animá esta pantalla", "hacé que se sienta más vivo", "auditá el motion", "revisá las animaciones" | `npx skills add mateodiazvaldez/skills -s microinteracciones-playbook` |
 | [`presentacion-viva`](skills/presentacion-viva/SKILL.md) | Arma, audita y mejora presentaciones como artifact Slides de claude.ai: poco texto, branding en cada slide, gráficos animados en loop. Usada en un deck real; sin evaluaciones formales. | Pedidos de presentación, deck, diapositivas, pitch o defensa de TPO; auditar, reordenar o animar slides; repartir oradores | `npx skills add mateodiazvaldez/skills -s presentacion-viva` |
+| [`guia-paso-a-paso`](skills/guia-paso-a-paso/SKILL.md) | Arma guías y tutoriales "anti bobos" como artifact de claude.ai: anonimizados, con datos configurables, versión completa para el técnico y versión repartida técnico + cliente, con la parte del cliente descargable para imprimir. Ejemplo terminado en [`plantillas/`](plantillas/). | "armame un tutorial", "pasá este video a una guía paso a paso", "hacé un instructivo para el cliente", "quiero imprimirle la guía" | `npx skills add mateodiazvaldez/skills -s guia-paso-a-paso` |
 | [`test-cases`](skills/test-cases/SKILL.md) | Auditoría de cobertura de tests automatizados más plan de test cases manuales (matriz de trazabilidad). v0.1.0 | "auditoría de tests", "qué tests faltan", "cobertura de tests", "generá los test cases", "QA audit" | `npx skills add mateodiazvaldez/skills -s test-cases` |
 | [`auto-issue-resolver`](skills/auto-issue-resolver/SKILL.md) | Actualiza el repo, identifica issues de GitHub paralelizables, pide clarificaciones, presenta un plan y despacha subagentes antes de crear PRs. | Pedido de resolver issues abiertos en paralelo | `npx skills add mateodiazvaldez/skills -s auto-issue-resolver` |
 | [`auto-pr-handler`](skills/auto-pr-handler/SKILL.md) | Revisa PRs abiertos, lee los code reviews, mergea los aprobados y despacha subagentes a corregir los que tienen cambios pedidos. | Pedido de gestionar o mergear PRs abiertos | `npx skills add mateodiazvaldez/skills -s auto-pr-handler` |
@@ -55,7 +56,13 @@ npx skills add mateodiazvaldez/skills -s microinteracciones-playbook  # fase de 
 skills/<nombre>/SKILL.md      # frontmatter name + description
 skills/<nombre>/*.md          # archivos de apoyo
 skills/<nombre>/scripts/      # herramientas (se invocan con su intérprete: node/bash)
+skills/<nombre>/assets/       # bases y plantillas que usa la skill
+plantillas/                   # artifacts terminados para reutilizar (no se instalan con la skill)
 ```
+
+## Plantillas
+
+Artifacts terminados que sirven de punto de partida. Ver [`plantillas/README.md`](plantillas/README.md).
 
 ## Licencia
 
